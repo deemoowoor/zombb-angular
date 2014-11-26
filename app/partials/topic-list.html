@@ -1,0 +1,19 @@
+<div ng-controller="TopicListCtrl">
+    <h1>Listing topics</h1>
+
+    <div class="well"><%= link_to fa_icon("plus", text: "New topic"), "#/post/new", class: "btn btn-success" %></div>
+
+    <div class="list-group">
+        <div class="list-group-item" ng-repeat="post in posts">
+            <div class="pull-right btn-group">
+                <a href="#/post/{{post.id}}/edit" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                <!-- TODO: make it a Javascript button -->
+                <a href="#/post/{{post.id}}/delete" class="btn btn-warning btn-sm"><i class="fa fa-remove"></i> Delete</a>
+            </div>
+            <h2 class="list-group-item-heading"><a href="#/post/{{post.id}}">{{ post.title }}</a></h2>
+            <p class="list-group-item-text">
+                <a href="#/post/{{post.id}}"><i class="fa fa-comment"></i> {{ post.post_comments.length }} comments</a>
+            </p>
+        </div>
+    </div>
+</div>

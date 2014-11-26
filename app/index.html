@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="zombb">
+<head>
+  <title>Zombb</title>
+  <link href='//fonts.googleapis.com/css?family=Dosis|Josefin+Slab:400,700|Ultra' rel='stylesheet' type='text/css'>
+  <link href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-resource.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-route.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="/angular-devise/lib/devise-min.js"></script>
+
+</head>
+<body>
+    <header class="nav navbar-static-top" role="banner" id="top">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand">ZomBB</a>
+            </div>
+            <nav role="navigation">
+                <ul class="nav navbar-nav">
+                    <li><a href="/" class="fa fa-gavel">Simple app</a></li>
+                    <li><a href="/" class="fa fa-list">Read posts</a></li>
+                    <li ng-if="isAdmin"><a href="#/users/" class="fa fa-users">Users</a></li>
+                </ul>
+            </nav>
+            <nav role="navigation" class="auth pull-right">
+                <ul class="nav navbar-nav">
+                    <li ng-if="Auth.isAuthenticated()"><a href="#/users/{{Auth._currentUser.id}}" class="fa fa-user">{{ Auth._currentUser.name }}</a></li>
+                    <li ng-if="Auth.isAuthenticated()"><a href="#/users/sign-out" class="fa fa-sign-out">Log out</a></li>
+                    <li ng-unless="Auth.isAuthenticated()"><a href="#/users/sign-in" class="fa fa-sign-in">Log in</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="background">
+        <div class="container">
+
+            <div ng-view></div>
+
+        </div>
+    </div>
+</body>
+</html>
