@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html ng-app="zombb">
+<html ng-app="zombbApp">
 <head>
   <title>Zombb</title>
-  <link href='//fonts.googleapis.com/css?family=Dosis|Josefin+Slab:400,700|Ultra' rel='stylesheet' type='text/css'>
   <link href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <link href="/demo/dist/zombb.min.css" rel='stylesheet' type='text/css'>
+  <link href="/demo/bower_components/fontawesome/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
 
+  <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-resource.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-route.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.4/angular-resource.min.js"></script>
   <!-- Latest compiled and minified JavaScript -->
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script src="/angular-devise/lib/devise-min.js"></script>
+  <script src="/demo/bower_components/angular-devise/lib/devise-min.js"></script>
 
+  <script src="/demo/dist/zombb.min.js"></script>
 </head>
 <body>
     <header class="nav navbar-static-top" role="banner" id="top">
@@ -21,9 +24,9 @@
             </div>
             <nav role="navigation">
                 <ul class="nav navbar-nav">
-                    <li><a href="/" class="fa fa-gavel">Simple app</a></li>
-                    <li><a href="/" class="fa fa-list">Read posts</a></li>
-                    <li ng-if="isAdmin"><a href="#/users/" class="fa fa-users">Users</a></li>
+                    <li><a href="http://localhost:3000/"><i class="fa fa-gavel"></i> Simple app</a></li>
+                    <li><a href="#/posts"><i class="fa fa-list"></i> Read posts</a></li>
+                    <li ng-if="isAdmin"><a href="#/users/"><i class="fa fa-users"></i> Users</a></li>
                 </ul>
             </nav>
             <nav role="navigation" class="auth pull-right">

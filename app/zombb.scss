@@ -1,0 +1,45 @@
+@import url(http://fonts.googleapis.com/css?family=Dosis|Josefin+Slab:400,700|Ultra);
+@import url(//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/darkly/bootstrap.min.css);
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "Ultra", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #E52E1D;
+}
+
+.background:before {
+    content: "";
+    position: fixed;
+    display: block;
+    left: 0;
+    right: 0;
+    z-index: -1;
+
+    background-image: url(/demo/images/zarmsbg.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+    width: 1980px;
+    height: 1080px;
+}
+
+.background {
+    z-index: 0;
+    left: 0;
+    right: 0;
+}
+
+body {
+    font-family: "Dosis", Helvetica, Arial, sans-serif;
+    color: #B5FFEB;
+}
+
+.panel-default {
+    background-color: rgba(48, 48, 48, .9);
+}
+
+.panel-default > .panel-heading {
+    color: #E52E1D;
+    background-color: rgba(70, 69, 69, .9);
+}

@@ -1,15 +1,12 @@
-angular.module 'zombbApp', ['zombbControllers']
-    .factory 'Post', ($resource) -> $resource '/posts/:id'
-    .factory 'PostComment', ($resource) -> $resource '/post_comments/:id'
-    .factory 'User', ($resource) -> $resource '/users/:id'
+angular.module 'zombbApp', ['zombbControllers', 'ngRoute']
     .config ['$routeProvider', ($routeProvider) ->
         $routeProvider
             .when('/topics',
-                templateUrl: '/pages/topic-list.html'
+                templateUrl: '/demo/topic-list.html'
                 controller: 'TopicListCtrl'
             )
             .when('/topics/:topic_id',
-                templateUrl: '/pages/topic.html'
+                templateUrl: '/demo/topic.html'
                 controller: 'TopicCtrl'
             )
             .otherwise(

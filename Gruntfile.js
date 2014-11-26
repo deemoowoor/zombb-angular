@@ -39,7 +39,7 @@ module.exports = function(grunt) {
                     '<%= cfg.srcDir %>/**/*.js',
                     '!<%= cfg.buildDir %>/*.js'
                 ],
-                tasks: ['jshint:source', 'clean:build', 'coffee:build', 'uglify:build', 'sass:build', 'cssmin', 'copy']
+                tasks: ['jshint:source', 'clean:build', 'coffee:build', 'uglify:build', 'sass:build', 'cssmin', 'copy:demo']
             },
             cssmin: {
                 files: [
@@ -52,7 +52,8 @@ module.exports = function(grunt) {
         coffee: {
             build: {
                 files: {
-                    '<%= cfg.buildDir %>/zombb.js': '<%= cfg.srcDir %>/zombb.coffee'
+                    '<%= cfg.buildDir %>/zombb.js': ['<%= cfg.srcDir %>/zombb.coffee',
+                        '<%= cfg.srcDir %>/controllers/*.coffee']
                 }
             }
         },
@@ -79,7 +80,62 @@ module.exports = function(grunt) {
             }
         },
 
-        // connect
+        sass: {
+            demo: {
+                options: {
+                    style: 'expanded'
+                },
+                files: {
+                    '<%= cfg.buildDir %>/main.css': '<%= cfg.srcDir %>/main.scss',
+                    '<%= cfg.buildDir %>/zombb.css': '<%= cfg.srcDir %>/zombb.scss'
+                }
+            },
+            build: {
+                options: {
+                    style: 'expanded'
+                },
+                files: {
+                    '<%= cfg.buildDir %>/zombb.css': ['<%= cfg.srcDir %>/zombb.scss']
+                }
+            }
+        },
+
+        cssmin: {
+            add_banner: {
+                options: {
+                    banner: '/* ZomBB css file */'
+                },
+                files: {
+                    '<%= cfg.buildDir %>/zombb.min.css': ['<%= cfg.buildDir %>/zombb.css']
+                }
+            }
+        },
+
+        // prepare files for demo
+        copy: {
+            demo: {
+                files: [{
+                    expand: true,
+                    src: '<%= cfg.buildDir %>/*.*',
+                    dest: '<%= cfg.demoDir %>/'
+                },
+                {
+                    expand: true,
+                    flatten: true,
+                    src: ['<%= cfg.srcDir %>/*.html', '<%= cfg.srcDir %>/partials/*.html'],
+                    dest: '<%= cfg.demoDir %>/',
+                    filter: 'isFile'
+                },
+                {
+                    expand: true,
+                    flatten: true,
+                    src: ['<%= cfg.srcDir %>/images/*.*'],
+                    dest: '<%= cfg.demoDir %>/images/',
+                    filter: 'isFile'
+                }]
+            }
+        },
+
         connect: {
             options: {
                 port: 9000,
@@ -97,65 +153,6 @@ module.exports = function(grunt) {
             }
         },
 
-        sass: {
-            demo: {
-                options: {
-                    style: 'expanded'
-                },
-                files: {
-                    '<%= cfg.buildDir %>/main.css': '<%= cfg.srcDir %>/main.scss',
-                    '<%= cfg.buildDir %>/zombb.css': '<%= cfg.srcDir %>/zombb.scss'
-                }
-            },
-            build: {
-                options: {
-                    style: 'expanded'
-                },
-                files: {
-                    '<%= cfg.buildDir %>/main.css': '<%= cfg.srcDir %>/main.scss',
-                    '<%= cfg.buildDir %>/zombb.css': '<%= cfg.srcDir %>/zombb.scss'
-                }
-            }
-        },
-
-
-        cssmin: {
-            add_banner: {
-                options: {
-                    banner: '/* ZomBB css file */'
-                },
-                files: {
-                    '<%= cfg.buildDir %>/zombb.min.css': ['<%= cfg.buildDir %>/zombb.css']
-                }
-            }
-        },
-
-        // prepare files for demo
-        copy: {
-            main: {
-                files: [{
-                    expand: true,
-                    src: ['<%= cfg.buildDir %>/*.*'],
-                    dest: '<%= cfg.demoDir %>/'
-                },
-                {
-                    expand: true,
-                    flatten: true,
-                    src: ['<%= cfg.srcDir %>/*.html', '<%= cfg.srcDir %>/tpl/*.html'],
-                    dest: '<%= cfg.demoDir %>/',
-                    filter: 'isFile'
-                },
-                {
-                    expand: true,
-                    flatten: true,
-                    src: ['<%= cfg.srcDir %>/img/*.*'],
-                    dest: '<%= cfg.demoDir %>/img/',
-                    filter: 'isFile'
-                }]
-            }
-        },
-
-        // open
         open: {
             server: {
                 path: 'http://localhost:<%= connect.options.port %>/<%= cfg.demoDir %>/'
@@ -183,7 +180,7 @@ module.exports = function(grunt) {
         },
 
         jscs: {
-            src: ['<%= cfg.srcDir %>/*.js', '<%= cfg.srcDir %>/**/*.js', '<%= cfg.testDir %>/*.js']
+            src: ['<%= cfg.srcDir %>/**/*.js', '<%= cfg.testDir %>/*.js']
         },
 
         // karma
