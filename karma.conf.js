@@ -15,11 +15,13 @@ module.exports = function(config) {
             cfg.bowerComponents + '/jquery/dist/jquery.js',
             cfg.bowerComponents + '/jasmine-jquery/lib/jasmine-jquery.js',
             cfg.bowerComponents + '/angular/angular.js',
+            cfg.bowerComponents + '/angular-route/angular-route.js',
+            cfg.bowerComponents + '/angular-devise/lib/devise.js',
             cfg.bowerComponents + '/angular-mocks/angular-mocks.js',
 
             // source files
-            'src/pinetree.js',
-            'src/**/*.js',
+            'dist/zombb.js',
+            'dist/**/*.js',
 
             // templates
             //'**/*.html',
@@ -38,7 +40,7 @@ module.exports = function(config) {
         ngHtml2JsPreprocessor: {
             // setting this option will create only a single module that contains templates
             // from all the files, so you can load them all with module('foo')
-            moduleName: 'pinetree'
+            moduleName: 'zombb'
         },
 
         // files to exclude
