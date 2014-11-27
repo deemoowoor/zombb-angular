@@ -13,7 +13,8 @@ module.exports = function(grunt) {
         srcDir: 'app',
         buildDir: 'dist',
         demoDir: 'demo',
-        testDir: 'test'
+        testDir: 'test',
+        zombbDir: '../zombb/public'
     };
 
     grunt.initConfig({
@@ -132,6 +133,11 @@ module.exports = function(grunt) {
                     src: ['<%= cfg.srcDir %>/images/*.*'],
                     dest: '<%= cfg.demoDir %>/images/',
                     filter: 'isFile'
+                },
+                {
+                    expand: true,
+                    src: ['<%= cfg.demoDir %>/**/*'],
+                    dest: '<%= cfg.zombbDir %>/'
                 }]
             }
         },
