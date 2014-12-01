@@ -1,0 +1,19 @@
+<div ng-controller="UserListCtrl">
+    <h1>Users</h1>
+
+    <div class="well">
+        <!-- TODO: new user JS btn -->
+        <a href="#/users/new" class="btn btn-success"><i class="fa fa-plus"></i> New user</a>
+    </div>
+
+    <div class="list-group">
+        <div class="list-group-item" ng-repeat="user in users">
+            <div class="pull-right btn-group">
+                <a href="#/user/{{user.id}}/edit" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                <!-- TODO: make it a Javascript button -->
+                <a href="#/user/{{user.id}}/delete" class="btn btn-danger btn-sm"><i class="fa fa-remove"></i> Delete</a>
+            </div>
+            <h2 class="list-group-item-heading"><a href="#/user/{{user.id}}">{{ user.name }}</a></h2>
+        </div>
+    </div>
+</div>

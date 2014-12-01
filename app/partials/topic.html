@@ -1,0 +1,59 @@
+<div class="well">
+    <a href="#/topics/{{ post.id }}/edit" class="btn btn-warning"><i class="fa fa-edit"></i> Edit</a>
+    <a href="#/topics/" class="btn btn-default"><i class="fa fa-undo"></i> Back</a>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h1>
+            {{ post.title }}
+            <small><i>by</i> {{ post.user.name || "Anonymous" }}</small>
+        </h1>
+
+        <p ng-bind-html="post.body">
+        </p>
+
+        <section class="comments" role="comments">
+            <div class="well">
+
+                <h2 ng-show="post.post_comments.length" >Comments</h2>
+
+                <div ng-repeat="comment in post.post_comments">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="well well-sm">
+                                <div class="user">
+                                    {{ comment.user.name || "Anonymous" }}
+                                </div>
+                                <div class="btn-group" ng-show="isLoggedIn(comment.user)">
+                                    <a href="#/topics/{{ post.id }}/comment/{{ comment.id }}/edit"
+                                        class="btn btn-sm btn-success" title="Edit"><i class="fa fa-edit"></i></a>
+                                    <a href="#/topics/{{ post.id }}/comment/{{ comment.id }}/delete"
+                                        class="btn btn-sm btn-danger" title="Delete"><i class="fa fa-remove"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="panel panel-default comment">
+                                <div class="panel-body" ng-bind-html="comment.text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Add comment</h2>
+
+                <form id="comment-form" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <textarea name="comment_text" class="form-control input-large" rows="10" />
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-default">Submit</button>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+        </div>
+    </div>

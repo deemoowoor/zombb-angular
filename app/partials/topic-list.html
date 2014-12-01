@@ -3,19 +3,19 @@
 
     <div class="well">
         <!-- TODO: new post JS btn -->
-        <a href="#/posts/new" class="btn btn-success"><i class="fa fa-plus"></i> New topic</a>
+        <a href="#/topics/new" class="btn btn-success"><i class="fa fa-plus"></i> New topic</a>
     </div>
 
     <div class="list-group">
         <div class="list-group-item" ng-repeat="post in posts">
             <div class="pull-right btn-group">
-                <a href="#/post/{{post.id}}/edit" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                <a href="#/topics/{{post.id}}/edit" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
                 <!-- TODO: make it a Javascript button -->
-                <a href="#/post/{{post.id}}/delete" class="btn btn-warning btn-sm"><i class="fa fa-remove"></i> Delete</a>
+                <a href="#/topics/{{post.id}}/delete" class="btn btn-danger btn-sm"><i class="fa fa-remove"></i> Delete</a>
             </div>
-            <h2 class="list-group-item-heading"><a href="#/post/{{post.id}}">{{ post.title }}</a></h2>
+            <h2 class="list-group-item-heading"><a href="#/topics/{{post.id}}">{{ post.title }}</a></h2>
             <p class="list-group-item-text">
-                <a href="#/post/{{post.id}}"><i class="fa fa-comment"></i> {{ post.post_comments.length }} comments</a>
+                <a href="#/topics/{{post.id}}"><i class="fa fa-comment"></i> {{ post.post_comments.length }} comments</a>
             </p>
         </div>
     </div>

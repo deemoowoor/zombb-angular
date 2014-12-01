@@ -1,4 +1,4 @@
-angular.module 'zombbApp', ['zombbControllers', 'ngRoute']
+angular.module 'zombbApp', ['zombb.auth', 'zombb.topic', 'ngRoute', 'ngSanitize']
     .config ['$routeProvider', ($routeProvider) ->
         $routeProvider
             .when('/topics',
