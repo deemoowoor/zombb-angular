@@ -16,8 +16,11 @@ module.exports = function(config) {
             cfg.bowerComponents + '/jasmine-jquery/lib/jasmine-jquery.js',
             cfg.bowerComponents + '/angular/angular.js',
             cfg.bowerComponents + '/angular-route/angular-route.js',
+            cfg.bowerComponents + '/angular-resource/angular-resource.js',
             cfg.bowerComponents + '/angular-devise/lib/devise.js',
+            cfg.bowerComponents + '/angular-sanitize/angular-sanitize.js',
             cfg.bowerComponents + '/angular-mocks/angular-mocks.js',
+            cfg.bowerComponents + '/angular-bootstrap/ui-bootstrap-tpls.js',
 
             // source files
             'dist/zombb.js',
@@ -27,7 +30,7 @@ module.exports = function(config) {
             //'**/*.html',
 
             // tests
-            'test/**/*.spec.js'
+            'dist/**/*.spec.js'
 
         ],
 

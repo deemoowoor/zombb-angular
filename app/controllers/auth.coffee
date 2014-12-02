@@ -7,8 +7,10 @@ m.config ['AuthProvider', (AuthProvider) ->
 
 m.factory 'User', ['$resource', ($resource) -> $resource '/users/:user_id.json']
 
-m.controller 'AuthCtrl', ['$scope', '$modal', '$window', 'Auth',
-($scope, $modal, $window, myAuth) ->
+m.controller 'AuthCtrl', ['$scope', '$modal', 'Auth',
+($scope, $modal, myAuth) ->
+    @scope = $scope
+
     $scope.logOut = () ->
         myAuth.logout()
 
@@ -16,10 +18,15 @@ m.controller 'AuthCtrl', ['$scope', '$modal', '$window', 'Auth',
         $scope.currentUser = null
         $scope.isAuth = false
 
+    $scope.templateUrl = 'zombbAuthCtrl.html'
+    $scope.template = null
+
     $scope.open = (size) ->
         dialog = $modal.open
-            templateUrl: 'zombbAuthCtrl.html'
+            templateUrl: $scope.templateUrl
+            template: $scope.template
             controller: 'AuthDialogCtrl'
+            controllerAs: 'dialog'
             size: size
 
     $scope.$on 'devise:login', (event, currentUser) ->
@@ -31,6 +38,8 @@ m.controller 'AuthCtrl', ['$scope', '$modal', '$window', 'Auth',
 
 m.controller 'AuthDialogCtrl', ['$scope', '$window', 'Auth', '$modalInstance',
 ($scope, $window, myAuth, dialog) ->
+    @scope = $scope
+
     $scope.doLogin = ->
         res = myAuth.login
             email: $scope.email
@@ -42,5 +51,6 @@ m.controller 'AuthDialogCtrl', ['$scope', '$window', 'Auth', '$modalInstance',
         res.then success, errcb
 
     $scope.cancel = -> dialog.dismiss('cancel')
+
     null
 ]
