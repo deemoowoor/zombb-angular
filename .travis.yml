@@ -9,6 +9,7 @@ before_install:
 before_script:
   - npm install -g grunt-cli bower
   - bower install --verbose
+  - grunt build
 
 script:
   - grunt test

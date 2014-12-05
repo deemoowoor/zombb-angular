@@ -15,13 +15,13 @@ module.exports = function(config) {
             cfg.bowerComponents + '/jquery/dist/jquery.js',
             cfg.bowerComponents + '/jasmine-jquery/lib/jasmine-jquery.js',
             cfg.bowerComponents + '/angular/angular.js',
-            cfg.bowerComponents + '/angular-route/angular-route.js',
             cfg.bowerComponents + '/angular-resource/angular-resource.js',
-            cfg.bowerComponents + '/angular-devise/lib/devise.js',
+            cfg.bowerComponents + '/angular-route/angular-route.js',
             cfg.bowerComponents + '/angular-sanitize/angular-sanitize.js',
-            cfg.bowerComponents + '/angular-mocks/angular-mocks.js',
+            cfg.bowerComponents + '/angular-devise/lib/devise.js',
             cfg.bowerComponents + '/angular-bootstrap/ui-bootstrap-tpls.js',
             cfg.bowerComponents + '/angular-elastic/elastic.js',
+            cfg.bowerComponents + '/angular-mocks/angular-mocks.js',
 
             // source files
             'dist/zombb.js',
@@ -44,7 +44,7 @@ module.exports = function(config) {
         ngHtml2JsPreprocessor: {
             // setting this option will create only a single module that contains templates
             // from all the files, so you can load them all with module('foo')
-            moduleName: 'zombbApp'
+            //moduleName: 'zombbApp'
         },
 
         // files to exclude
