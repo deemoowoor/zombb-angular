@@ -4,7 +4,10 @@ m.factory 'Post', ['$resource', ($resource) -> ($resource '/posts/:post_id.json'
     update: { method: 'PUT'})
 ]
 
-m.factory 'PostComment', ['$resource', ($resource) -> $resource '/post_comments/:c_id.json']
+m.factory 'PostComment', ['$resource', ($resource) ->
+    ($resource '/posts/:post_id/post_comments/:c_id.json', {post_id: '@post_id', c_id: '@id'},
+    update: { method: 'PUT'})
+]
 
 m.factory 'ConfirmDialog', ['$modal', ($modal) ->
     ($scope) ->
@@ -42,20 +45,20 @@ m.controller 'TopicListCtrl', ['$scope', '$modal', 'Post', 'ConfirmDialog',
         angular.forEach posts, (post) ->
             $scope.posts.push(post)
 
-    $scope.confirmDeleteTopic = (post) ->
-        dialog = ConfirmDialog($scope)
-        dialog.result.then ((res) -> $scope.deleteTopic(post)),
-                            ((error) -> $scope.error = error)
-
     $scope.deleteTopic = (post) ->
-        post.$delete()
-        $scope.posts.splice($scope.posts.indexOf(post), 1)
+        dialog = ConfirmDialog($scope)
+        doDelete = (res) ->
+            $scope.deleteTopic(post)
+            post.$delete()
+            $scope.posts.splice($scope.posts.indexOf(post), 1)
+        dialog.result.then doDelete,
+                            ((error) -> $scope.error = error)
 
     null
 ]
 
-m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Post', 'Auth',
-($scope, $routeParams, Post, Auth) ->
+m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth', 'Post', 'PostComment', 'ConfirmDialog',
+($scope, $routeParams, Auth, Post, PostComment, ConfirmDialog) ->
     Post.get { post_id: $routeParams.topic_id }, (post) ->
         $scope.post = post
 
@@ -66,17 +69,38 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Post', 'Auth',
         false
 
     $scope.editComment = (comment) ->
-        # TODO: implement form display and binding
-        null
+        comment.editmode = true
+        # get edited element
+        PostComment.get {post_id: $routeParams.topic_id, c_id: comment.id, edit: true}, (rcomment) ->
+                $scope.edit_comment = rcomment
+
+    $scope.cancelEditComment = (comment) ->
+        comment.editmode = undefined
+        $scope.edit_comment = null
+
+    $scope.saveComment = (comment) ->
+        comment.editmode = undefined
+        $scope.edit_comment.$update post_id: $scope.post.id
+        # Reload comment's rendered text
+        PostComment.get { post_id: $scope.post.id, c_id: comment.id }, (rcomment) ->
+            comment.text = rcomment.text
 
     $scope.deleteComment = (comment) ->
-        # TODO: implement a modal confirmation dialog display and deletion
-        null
+        dialog = ConfirmDialog($scope)
 
-    $scope.comment = new PostComment()
+        doDelete = (res) ->
+            PostComment.get post_id: $scope.post.id, c_id: comment.id, (rcomment) ->
+                rcomment.$delete post_id: $scope.post.id
+            $scope.post.post_comments.splice($scope.post.post_comments.indexOf(comment), 1)
+
+        dialog.result.then doDelete, ((error) -> $scope.error = error)
+
+    $scope.new_comment = new PostComment()
 
     $scope.addComment = ->
-        $scope.comment.$save()
+        $scope.new_comment.$save post_id: $scope.post.id, (rcomment) ->
+            $scope.post.post_comments.push rcomment
+            $scope.new_comment = new PostComment()
 
     null
 ]
