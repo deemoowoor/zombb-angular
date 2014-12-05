@@ -1,7 +1,8 @@
 describe('zombb', ->
-    beforeEach(module('zombbApp', 'ngResource', 'ui.bootstrap'))
-    beforeEach(module('zombb.auth'))
-    beforeEach(module('zombb.topic'))
+    beforeEach(module('zombbApp', 'zombb.auth', 'zombb.topic',
+        'ngRoute', 'ngSanitize', 'ui.bootstrap'))
+    beforeEach(module('zombb.auth', 'ngResource'))
+    beforeEach(module('zombb.topic', 'ngResource'))
 
     AuthProvider = null
     beforeEach module('Devise', (_AuthProvider_) ->
