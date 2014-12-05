@@ -1,19 +1,44 @@
 <div class="well">
-    <a href="#/topics/{{ post.id }}/edit" class="btn btn-warning"><i class="fa fa-edit"></i> Edit</a>
-    <a href="#/topics/" class="btn btn-default"><i class="fa fa-undo"></i> Back</a>
+    <a ng-hide="editmode" href="#/topics/{{ post.id }}/edit" class="btn btn-warning"><i class="fa fa-edit"></i> Edit</a>
+    <a ng-hide="editmode" href="#/topics/" class="btn btn-default"><i class="fa fa-undo"></i> Back</a>
+    <a ng-show="editmode" href="#/topics/{{ post.id }}" class="btn btn-default"><i class="fa fa-undo"></i> Back</a>
 </div>
 <div class="panel panel-default">
     <div class="panel-body">
-        <h1>
-            {{ post.title }}
-            <small><i>by</i> {{ post.user.name || "Anonymous" }}</small>
-        </h1>
+        <div ng-hide="editmode">
+            <h1>
+                {{ post.title }}
+                <small><i>by</i> {{ post.user.name || "Anonymous" }}</small>
+            </h1>
 
-        <p ng-bind-html="post.body">
-        </p>
+            <p ng-bind-html="post.body">
+            </p>
+        </div>
 
+        <div ng-show="editmode" class="col-sm-12">
+            <form id="editpost" class="form-horizontal" role="edit" ng-submit="submit()">
+                <div class="form-group">
+                    <input ng-model="post.title" type="text" name="title"
+                    class="form-control input-large" placeholder="Title"/>
+                </div>
+                <div class="form-group">
+                    <textarea id="editpost-body" ng-model="post.body" name="body"
+                        class="form-control input-large"
+                        msd-elastic="\n" rows="20" placeholder="Message body"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="submit" value="Save"
+                    class="btn btn-success"/>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+<div class="panel panel-default" ng-hide="editmode">
+    <div class="panel-body">
         <section class="comments" role="comments">
-            <div class="well">
+            <div class="col-sm-12">
 
                 <h2 ng-show="post.post_comments.length">Comments</h2>
 
@@ -25,16 +50,17 @@
                                     {{ comment.user.name || "Anonymous" }}
                                 </div>
                                 <div class="btn-group" ng-show="isLoggedIn(comment.user)">
-                                    <a href="#/topics/{{ post.id }}/comment/{{ comment.id }}/edit"
-                                        class="btn btn-sm btn-success" title="Edit"><i class="fa fa-edit"></i></a>
-                                    <a href="#/topics/{{ post.id }}/comment/{{ comment.id }}/delete"
+                                    <a ng-click="editComment(post, comment)"
+                                        class="btn btn-sm btn-warning" title="Edit"><i class="fa fa-edit"></i></a>
+                                    <a ng-click="deleteComment(post, comment)"
                                         class="btn btn-sm btn-danger" title="Delete"><i class="fa fa-remove"></i></a>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-10">
                             <div class="panel panel-default comment">
-                                <div class="panel-body" ng-bind-html="comment.text">
+                                <div class="panel-body">
+                                    <p ng-bind-html="comment.text"></p>
                                 </div>
                             </div>
                         </div>
@@ -43,13 +69,13 @@
 
                 <h2>Add comment</h2>
 
-                <form id="comment-form" class="form-horizontal" role="form">
+                <form id="comment-form" class="form-horizontal col-sm-12" role="form">
                     <div class="form-group">
-                        <textarea name="comment_text" class="form-control input-large" rows="10" />
+                        <textarea msd-elastic="\n" ng-model="comment.text" name="comment_text" class="form-control input-large" rows="10" placeholder="Comment text"></textarea>
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-default">Submit</button>
+                        <button class="btn btn-default" ng-click="addComment()">Submit</button>
                     </div>
                 </form>
             </div>

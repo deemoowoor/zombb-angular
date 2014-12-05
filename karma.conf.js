@@ -21,6 +21,7 @@ module.exports = function(config) {
             cfg.bowerComponents + '/angular-sanitize/angular-sanitize.js',
             cfg.bowerComponents + '/angular-mocks/angular-mocks.js',
             cfg.bowerComponents + '/angular-bootstrap/ui-bootstrap-tpls.js',
+            cfg.bowerComponents + '/angular-elastic/elastic.js',
 
             // source files
             'dist/zombb.js',
