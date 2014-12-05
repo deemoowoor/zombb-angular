@@ -238,5 +238,6 @@ module.exports = function(grunt) {
     grunt.registerTask('build', ['jscs:src', 'jshint:source', 'clean:build', 'coffee:build', 'sass:build', 'cssmin', 'uglify:build', 'copy']);
     grunt.registerTask('webserver', ['build', 'open', 'connect:demo', 'watch']);
     grunt.registerTask('test', ['coffee:test', 'jscs:src', 'jshint:source', 'karma:single']);
+    grunt.registerTask('test', ['coffee:test', 'coffee:build', 'jscs:src', 'jshint:source', 'karma:single']);
     grunt.registerTask('test:continuous', ['karma:continuous']);
 };
