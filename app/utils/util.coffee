@@ -3,7 +3,7 @@ m = angular.module 'zombb.util', ['ui.bootstrap']
 m.factory 'ConfirmDialog', ['$modal', ($modal) ->
     ($scope, messages) ->
         $scope.templateUrl = null
-        $scope.title = messages.title || 'Confirm?'
+        $scope.title = messages?.title or 'Confirm?'
         $scope.template = '<div class="modal-header">
             <h3 class="modal-title">{{ title }}</h3>
         </div>

@@ -10,16 +10,22 @@ m.factory 'PostComment', ['$resource', ($resource) ->
     update: { method: 'PUT'})
 ]
 
-m.controller 'TopicListCtrl', ['$scope', '$modal', 'Post', 'ConfirmDialog',
-($scope, $modal, Post, ConfirmDialog) ->
+m.controller 'TopicListCtrl', ['$scope', '$modal', 'Auth', 'Post', 'ConfirmDialog',
+($scope, $modal, Auth, Post, ConfirmDialog) ->
     $scope.posts = []
+
+    $scope.isLoggedIn = (user) ->
+        if Auth.isAuthenticated() and user and Auth._currentUser.name == user.name
+            true
+        else
+            false
 
     Post.query (posts) ->
         angular.forEach posts, (post) ->
             $scope.posts.push(post)
 
     $scope.deleteTopic = (post) ->
-        dialog = ConfirmDialog($scope)
+        dialog = ConfirmDialog($scope, {title: 'Confirm delete topic?'})
         doDelete = (res) ->
             post.$delete()
             $scope.posts.splice($scope.posts.indexOf(post), 1)
@@ -34,14 +40,13 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth', 'Post', 'PostCommen
     Post.get { post_id: $routeParams.topic_id }, (post) ->
         $scope.post = post
 
-    # TODO; move into a separate service
     $scope.isLoggedIn = (user) ->
         if Auth.isAuthenticated() and user and Auth._currentUser.name == user.name
-            return true
-        false
+            true
+        else
+            false
 
-    $scope.isAuthenticated = ->
-        Auth.isAuthenticated()
+    $scope.isAuthenticated = -> Auth.isAuthenticated()
 
     $scope.editComment = (comment) ->
         comment.editmode = true
@@ -61,7 +66,7 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth', 'Post', 'PostCommen
             comment.text = rcomment.text
 
     $scope.deleteComment = (comment) ->
-        dialog = ConfirmDialog($scope)
+        dialog = ConfirmDialog($scope, {title: 'Confirm delete comment?'})
 
         doDelete = (res) ->
             PostComment.get post_id: $scope.post.id, c_id: comment.id, (rcomment) ->
