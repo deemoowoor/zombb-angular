@@ -5,22 +5,20 @@ m.config ['AuthProvider', (AuthProvider) ->
     #AuthProvider.logoutPath('http://localhost:3000/users/sign_out.json')
 ]
 
+# TODO: use interceptAuth to intercept 401 responses and display login dialog automatically
+
 m.run ['Auth', (Auth) ->
     # Restore authenticated state on startup
     Auth.login()
 ]
 
-m.factory 'User', ['$resource', ($resource) -> $resource '/users/:user_id.json']
-
-m.controller 'AuthCtrl', ['$scope', '$modal', 'Auth', ($scope, $modal, myAuth) ->
+m.controller 'AuthCtrl', ['$scope', '$modal', 'Auth', ($scope, $modal, Auth) ->
     @scope = $scope
 
-    $scope.logOut = -> myAuth.logout()
+    $scope.logOut = -> Auth.logout()
 
     $scope.templateUrl = 'zombbAuthCtrl.html'
     $scope.template = null
-
-    $scope.error_handler = (error) -> $scope.error = error
 
     $scope.open = (size) ->
         dialog = $modal.open
@@ -28,17 +26,16 @@ m.controller 'AuthCtrl', ['$scope', '$modal', 'Auth', ($scope, $modal, myAuth) -
             template: $scope.template
             controller: 'AuthDialogCtrl'
             controllerAs: 'authDialog'
+            scope: $scope
             size: size
 
-        dialog.result.then $scope.doLogin, $scope.error_handler
+        doLogin = (credentials) ->
+            Auth.login(credentials).then (->), (error) ->
+                $scope.open()
+                $scope.error = error.data.error
 
+        dialog.result.then(doLogin, (error) -> $scope.error = error)
         dialog
-
-    $scope.doLogin = (credentials) ->
-        res = myAuth.login credentials
-
-        success = () ->
-        res.then success, $scope.error_handler
 
     $scope.$on 'devise:login', (event, currentUser) ->
         $scope.currentUser = currentUser

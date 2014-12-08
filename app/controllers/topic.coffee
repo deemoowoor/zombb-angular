@@ -1,4 +1,5 @@
-m = angular.module 'zombb.topic', ['ngResource', 'ui.bootstrap', 'monospaced.elastic', 'zombb.auth']
+m = angular.module 'zombb.topic',
+    ['ngResource', 'ui.bootstrap', 'monospaced.elastic', 'zombb.auth', 'zombb.util']
 
 m.factory 'Post', ['$resource', ($resource) -> ($resource '/posts/:post_id.json', {post_id: '@id'},
     update: { method: 'PUT'})
@@ -7,34 +8,6 @@ m.factory 'Post', ['$resource', ($resource) -> ($resource '/posts/:post_id.json'
 m.factory 'PostComment', ['$resource', ($resource) ->
     ($resource '/posts/:post_id/post_comments/:c_id.json', {post_id: '@post_id', c_id: '@id'},
     update: { method: 'PUT'})
-]
-
-m.factory 'ConfirmDialog', ['$modal', ($modal) ->
-    ($scope) ->
-        $scope.templateUrl = null
-        $scope.template = '<div class="modal-header">
-            <h3 class="modal-title">Confirm delete?</h3>
-        </div>
-        <div class="modal-body">
-            <input type="submit" value="Delete" class="btn btn-success" ng-click="ok()" />
-            <button class="btn btn-default" ng-click="cancel()">Cancel</button>
-        </div>'
-
-        dialog = $modal.open
-            templateUrl: $scope.templateUrl
-            template: $scope.template
-            controller: 'ConfirmDialogCtrl'
-            controllerAs: 'deleteDialog'
-            scope: $scope
-]
-
-m.controller 'ConfirmDialogCtrl', ['$scope', '$modalInstance', ($scope, dialog) ->
-    @scope = $scope
-
-    $scope.ok = -> dialog.close true
-    $scope.cancel = -> dialog.dismiss 'cancel'
-
-    null
 ]
 
 m.controller 'TopicListCtrl', ['$scope', '$modal', 'Post', 'ConfirmDialog',
@@ -48,7 +21,6 @@ m.controller 'TopicListCtrl', ['$scope', '$modal', 'Post', 'ConfirmDialog',
     $scope.deleteTopic = (post) ->
         dialog = ConfirmDialog($scope)
         doDelete = (res) ->
-            $scope.deleteTopic(post)
             post.$delete()
             $scope.posts.splice($scope.posts.indexOf(post), 1)
         dialog.result.then doDelete,
@@ -67,6 +39,9 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth', 'Post', 'PostCommen
         if Auth.isAuthenticated() and user and Auth._currentUser.name == user.name
             return true
         false
+
+    $scope.isAuthenticated = ->
+        Auth.isAuthenticated()
 
     $scope.editComment = (comment) ->
         comment.editmode = true
@@ -105,8 +80,8 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth', 'Post', 'PostCommen
     null
 ]
 
-m.controller 'TopicEditCtrl', ['$scope', '$routeParams', 'Post', 'Auth',
-($scope, $routeParams, Post, Auth) ->
+m.controller 'TopicEditCtrl', ['$scope', '$routeParams', '$location', 'Post', 'Auth',
+($scope, $routeParams, $location, Post, Auth) ->
     $scope.editmode = true
 
     Post.get { post_id: $routeParams.topic_id, edit: true }, (post) ->
@@ -116,30 +91,21 @@ m.controller 'TopicEditCtrl', ['$scope', '$routeParams', 'Post', 'Auth',
         $scope.post.$update().then ->
             Post.get { post_id: $scope.post.id, edit: true }, (post) ->
                 $scope.post = post
+                $location.path '/topics/' + $scope.post.id
 
     null
 ]
 
-m.controller 'TopicNewCtrl', ['$scope', '$routeParams', 'Post', 'Auth',
-($scope, $routeParams, Post, Auth) ->
+m.controller 'TopicNewCtrl', ['$scope', '$routeParams', '$location', 'Post', 'Auth',
+($scope, $routeParams, $location, Post, Auth) ->
     $scope.editmode = true
 
     $scope.post = new Post()
     $scope.submit = ->
         $scope.post.$save().then ->
-            Post.get { post_id: $scope.post.id, edit: true }, (post) ->
+            Post.get { post_id: $scope.post.id, edit: true}, (post) ->
                 $scope.post = post
+                $location.path '/topics/' + $scope.post.id
 
-    null
-]
-
-m.controller 'CommentEditCtrl', ['$scope', '$routeParams', 'PostComment', 'Auth',
-($scope, $routeParams, PostComment, Auth) ->
-    $scope.editmode = true
-
-    PostComment.get { comment_id: $routeParams.comment_id, edit: true }, (post) ->
-        $scope.comment = comment
-
-    $scope.submit = -> $scope.comment.$save()
     null
 ]

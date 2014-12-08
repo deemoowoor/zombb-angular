@@ -14,7 +14,8 @@
                     class="btn btn-danger btn-sm"><i class="fa fa-remove"></i> Delete</a>
             </div>
             <h2 class="list-group-item-heading">
-                <a href="#/topics/{{post.id}}">{{ post.title }}</a></h2>
+                <a href="#/topics/{{post.id}}">{{ post.title }}</a>
+                <small>by {{ post.user.name || "Anonymous" }}</small></h2>
             <p class="list-group-item-text">
             <a href="#/topics/{{post.id}}"><i class="fa fa-comment"></i>
                 {{ post.post_comments.length }} comments</a>

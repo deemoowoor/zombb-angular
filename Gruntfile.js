@@ -37,7 +37,7 @@ module.exports = function(grunt) {
             },
             build: {
                 files: [
-                    '<%= cfg.srcDir %>/**/*.js',
+                    '<%= cfg.srcDir %>/**/*.coffee',
                     '!<%= cfg.buildDir %>/*.js'
                 ],
                 tasks: ['jshint:source', 'clean:build', 'coffee:build', 'uglify:build', 'sass:build', 'cssmin', 'copy:demo']
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
             build: {
                 files: {
                     '<%= cfg.buildDir %>/zombb.js': ['<%= cfg.srcDir %>/zombb.coffee',
-                        '<%= cfg.srcDir %>/controllers/*.coffee']
+                        '<%= cfg.srcDir %>/controllers/*.coffee', '<%= cfg.srcDir %>/utils/*.coffee']
                 }
             },
             test: {
