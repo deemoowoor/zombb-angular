@@ -1,5 +1,5 @@
 <div class="well">
-    <a ng-hide="editmode || !isLoggedIn(post.user)" href="#/topics/{{ post.id }}/edit" class="btn btn-warning"><i class="fa fa-edit"></i> Edit</a>
+    <a ng-if="!editmode && Authorize.condition.owner(post.user)" href="#/topics/{{ post.id }}/edit" class="btn btn-warning"><i class="fa fa-edit"></i> Edit</a>
     <a ng-hide="editmode" href="#/topics/" class="btn btn-default"><i class="fa fa-undo"></i> Back</a>
     <a ng-show="editmode" href="#/topics/{{ post.id }}" class="btn btn-default"><i class="fa fa-undo"></i> Back</a>
 </div>
@@ -27,8 +27,7 @@
                         msd-elastic="\n" rows="20" placeholder="Message body"></textarea>
                 </div>
                 <div class="form-group">
-                    <input type="submit" name="submit" value="Save"
-                    class="btn btn-success"/>
+                    <input type="submit" name="submit" value="Save" class="btn btn-success"/>
                 </div>
             </form>
         </div>
@@ -49,7 +48,7 @@
                                 <div class="user">
                                     {{ comment.user.name || "Anonymous" }}
                                 </div>
-                                <div class="btn-group" ng-show="isLoggedIn(comment.user)">
+                                <div class="btn-group" ng-if="Authorize.condition.owner(comment.user)">
                                     <a ng-click="editComment(comment)"
                                         class="btn btn-sm btn-warning" title="Edit"><i class="fa fa-edit"></i></a>
                                     <a ng-click="deleteComment(comment)"
@@ -82,12 +81,14 @@
                     </div>
                 </div>
 
-                <div ng-show="isAuthenticated()">
+                <div ng-if="Authorize.condition.auth()">
                     <h2>Add comment</h2>
 
                     <form id="comment-form" class="form-horizontal col-sm-12" role="form">
                         <div class="form-group">
-                            <textarea msd-elastic="\n" ng-model="new_comment.text" name="comment_text" class="form-control input-large" rows="10" placeholder="Comment text"></textarea>
+                            <textarea msd-elastic="\n" ng-model="new_comment.text" name="comment_text"
+                                class="form-control input-large" rows="10"
+                                placeholder="Comment text"></textarea>
                         </div>
 
                         <div class="form-group">
@@ -95,7 +96,7 @@
                         </div>
                     </form>
                 </div>
-                <div ng-hide="isAuthenticated()" ng-controller="AuthCtrl">
+                <div ng-if="!Authorize.condition.auth()" ng-controller="AuthCtrl">
                     <p>Please <a class="pointer" ng-click="open()">log in</a> to add comments...</p>
                 </div>
             </div>

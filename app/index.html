@@ -24,19 +24,20 @@
             <div class="navbar-header">
                 <a href="/demo/" class="navbar-brand">ZomBB</a>
             </div>
-            <nav role="navigation">
+            <nav role="navigation" ng-controller="NavCtrl">
                 <ul class="nav navbar-nav">
                     <li><a href="/"><i class="fa fa-gavel"></i> Simple app</a></li>
                     <li><a href="#!/posts"><i class="fa fa-list"></i> Read posts</a></li>
-                    <li ng-if="isAdmin"><a href="#/users/"><i class="fa fa-users"></i> Users</a></li>
+                    <li ng-if="Authorize.condition.admin()"><a href="#/dashboard/"><i class="fa fa-dashboard"></i>
+                        Dashboard</a></li>
                 </ul>
             </nav>
             <nav role="navigation" class="auth pull-right" ng-controller="AuthCtrl">
                 <ul class="nav navbar-nav">
-                    <li ng-show="isAuth"><a class="pointer" href="#/users/{{ currentUser.id }}"><i class="fa fa-user"></i> {{ currentUser.name }}</a></li>
-                    <li ng-show="isAuth"><a class="pointer" ng-click="logOut()"><i class="fa fa-sign-out"></i> Log out</a></li>
-                    <li ng-hide="isAuth"><a class="pointer" ng-click="open()"><i class="fa fa-sign-in"></i> Log in</a></li>
-                    <li ng-hide="isAuth"><a href="#/register"><i class="fa fa-puzzle-piece"></i> Sign up</a></li>
+                    <li ng-if="Authorize.condition.auth()"><a class="pointer" href="#/users/{{ currentUser.id }}"><i class="fa fa-user"></i> {{ currentUser.name }}</a></li>
+                    <li ng-if="Authorize.condition.auth()"><a class="pointer" ng-click="Auth.logout()"><i class="fa fa-sign-out"></i> Log out</a></li>
+                    <li ng-if="!Authorize.condition.auth()"><a class="pointer" ng-click="open()"><i class="fa fa-sign-in"></i> Log in</a></li>
+                    <li ng-if="!Authorize.condition.auth()"><a href="#/register"><i class="fa fa-puzzle-piece"></i> Sign up</a></li>
                 </ul>
             </nav>
         </div>

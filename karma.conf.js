@@ -24,8 +24,8 @@ module.exports = function(config) {
             cfg.bowerComponents + '/angular-mocks/angular-mocks.js',
 
             // source files
+            //'dist/**/*.js',
             'dist/zombb.js',
-            'dist/**/*.js',
 
             // templates
             //'**/*.html',

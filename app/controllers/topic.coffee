@@ -10,43 +10,33 @@ m.factory 'PostComment', ['$resource', ($resource) ->
     update: { method: 'PUT'})
 ]
 
-m.controller 'TopicListCtrl', ['$scope', '$modal', 'Auth', 'Post', 'ConfirmDialog',
-($scope, $modal, Auth, Post, ConfirmDialog) ->
+m.controller 'TopicListCtrl', ['$scope', '$modal', 'Auth', 'Authorize', 'Post', 'ConfirmDialog',
+($scope, $modal, Auth, Authorize, Post, ConfirmDialog) ->
+    $scope.Authorize = Authorize
+
     $scope.posts = []
 
-    $scope.isLoggedIn = (user) ->
-        if Auth.isAuthenticated() and user and Auth._currentUser.name == user.name
-            true
-        else
-            false
-
-    Post.query (posts) ->
-        angular.forEach posts, (post) ->
-            $scope.posts.push(post)
+    Post.query ((posts) -> angular.forEach posts, (post) -> $scope.posts.push(post))
 
     $scope.deleteTopic = (post) ->
         dialog = ConfirmDialog($scope, {title: 'Confirm delete topic?'})
         doDelete = (res) ->
+            # XXX: indicate an error message if it fails on server
             post.$delete()
             $scope.posts.splice($scope.posts.indexOf(post), 1)
-        dialog.result.then doDelete,
-                            ((error) -> $scope.error = error)
+        dialog.result.then doDelete
 
     null
 ]
 
-m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth', 'Post', 'PostComment', 'ConfirmDialog',
-($scope, $routeParams, Auth, Post, PostComment, ConfirmDialog) ->
+m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth',
+'Authorize', 'Post', 'PostComment', 'ConfirmDialog',
+($scope, $routeParams, Auth, Authorize, Post, PostComment, ConfirmDialog) ->
+
+    $scope.Authorize = Authorize
+
     Post.get { post_id: $routeParams.topic_id }, (post) ->
         $scope.post = post
-
-    $scope.isLoggedIn = (user) ->
-        if Auth.isAuthenticated() and user and Auth._currentUser.name == user.name
-            true
-        else
-            false
-
-    $scope.isAuthenticated = -> Auth.isAuthenticated()
 
     $scope.editComment = (comment) ->
         comment.editmode = true
@@ -69,15 +59,17 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth', 'Post', 'PostCommen
         dialog = ConfirmDialog($scope, {title: 'Confirm delete comment?'})
 
         doDelete = (res) ->
+            # TODO: indicate an error message if it fails
             PostComment.get post_id: $scope.post.id, c_id: comment.id, (rcomment) ->
                 rcomment.$delete post_id: $scope.post.id
             $scope.post.post_comments.splice($scope.post.post_comments.indexOf(comment), 1)
 
-        dialog.result.then doDelete, ((error) -> $scope.error = error)
+        dialog.result.then doDelete
 
     $scope.new_comment = new PostComment()
 
     $scope.addComment = ->
+        # TODO: indicate an error message if it fails
         $scope.new_comment.$save post_id: $scope.post.id, (rcomment) ->
             $scope.post.post_comments.push rcomment
             $scope.new_comment = new PostComment()
@@ -92,6 +84,7 @@ m.controller 'TopicEditCtrl', ['$scope', '$routeParams', '$location', 'Post', 'A
     Post.get { post_id: $routeParams.topic_id, edit: true }, (post) ->
         $scope.post = post
 
+    # TODO: indicate an error message if it fails
     $scope.submit = ->
         $scope.post.$update().then ->
             Post.get { post_id: $scope.post.id, edit: true }, (post) ->
@@ -107,6 +100,7 @@ m.controller 'TopicNewCtrl', ['$scope', '$routeParams', '$location', 'Post', 'Au
 
     $scope.post = new Post()
     $scope.submit = ->
+        # TODO: indicate an error message if it fails
         $scope.post.$save().then ->
             Post.get { post_id: $scope.post.id, edit: true}, (post) ->
                 $scope.post = post

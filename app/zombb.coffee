@@ -1,34 +1,51 @@
-angular.module 'zombbApp', ['zombb.auth', 'zombb.topic', 'zombb.user', 'ngRoute', 'ngSanitize']
-    .config ['$routeProvider', ($routeProvider) ->
-        $routeProvider
-            .when '/topics',
-                templateUrl: '/demo/topic-list.html'
-                controller: 'TopicListCtrl'
+m = angular.module 'zombbApp', ['zombb.auth', 'zombb.topic', 'zombb.user',
+    'zombb.dashboard', 'ngRoute', 'ngSanitize']
 
-            .when '/topics/new',
-                templateUrl: '/demo/topic.html'
-                controller: 'TopicNewCtrl'
+m.config ['$routeProvider', '$provide', ($routeProvider, $provide) ->
+    baseSrcPath = '/demo'
+    $provide.value('baseSrcPath', baseSrcPath)
+    $routeProvider
+        .when '/topics',
+            templateUrl: "#{baseSrcPath}/topic-list.html"
+            controller: 'TopicListCtrl'
 
-            .when '/topics/:topic_id/edit',
-                templateUrl: '/demo/topic.html'
-                controller: 'TopicEditCtrl'
+        .when '/topics/new',
+            templateUrl: "#{baseSrcPath}/topic.html"
+            controller: 'TopicNewCtrl'
 
-            .when '/topics/:topic_id',
-                templateUrl: '/demo/topic.html'
-                controller: 'TopicCtrl'
+        .when  '/topics/:topic_id/edit',
+            templateUrl: "#{baseSrcPath}/topic.html"
+            controller: 'TopicEditCtrl'
 
-            .when '/users/:user_id',
-                templateUrl: '/demo/user.html'
-                controller: 'UserCtrl'
+        .when '/topics/:topic_id',
+            templateUrl: "#{baseSrcPath}/topic.html"
+            controller: 'TopicCtrl'
 
-            .when '/users/:user_id/edit',
-                templateUrl: '/demo/user.html'
-                controller: 'UserEditCtrl'
+        .when '/users/:user_id',
+            templateUrl: "#{baseSrcPath}/user.html"
+            controller: 'UserCtrl'
 
-            .when '/register',
-                templateUrl: '/demo/user.html',
-                controller: 'UserRegisterCtrl'
+        .when '/users/:user_id/edit',
+            templateUrl: "#{baseSrcPath}/user.html"
+            controller: 'UserEditCtrl'
 
-            .otherwise
-                redirectTo: '/topics'
-    ]
+        .when '/register',
+            templateUrl: "#{baseSrcPath}/user.html",
+            controller: 'UserRegisterCtrl'
+
+        .when '/dashboard',
+            templateUrl: "#{baseSrcPath}/dashboard.html",
+            controller: 'DashboardCtrl'
+
+        .otherwise
+            redirectTo: '/topics'
+    null
+]
+
+m.controller 'NavCtrl', ['$scope', 'Auth', 'Authorize',
+($scope, Auth, Authorize) ->
+
+    $scope.Authorize = Authorize
+
+    null
+]

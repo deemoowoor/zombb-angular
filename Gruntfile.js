@@ -54,7 +54,8 @@ module.exports = function(grunt) {
             build: {
                 files: {
                     '<%= cfg.buildDir %>/zombb.js': ['<%= cfg.srcDir %>/zombb.coffee',
-                        '<%= cfg.srcDir %>/controllers/*.coffee', '<%= cfg.srcDir %>/utils/*.coffee']
+                        '<%= cfg.srcDir %>/controllers/*.coffee',
+                        '<%= cfg.srcDir %>/utils/*.coffee']
                 }
             },
             test: {

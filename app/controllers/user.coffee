@@ -5,8 +5,6 @@ m.factory 'User', ['$resource', ($resource) ->
 ]
 
 m.controller 'UserCtrl', ['$scope', '$routeParams', 'User', ($scope, $routeParams, User) ->
-    @scope = $scope
-
     User.get {user_id: $routeParams.user_id }, (user) ->
         $scope.user = user
 ]
@@ -15,8 +13,7 @@ m.controller 'UserEditCtrl', ['$scope', '$routeParams', '$location', '$http', 'A
 'ConfirmDialog', 'User',
 ($scope, $routeParams, $location, $http, Auth, ConfirmDialog, User) ->
     $scope.editmode = true
-
-    $scope.error = null
+    $scope.Auth = Auth
 
     User.get { user_id: $routeParams.user_id } , (user) ->
         $scope.user = user
@@ -36,11 +33,16 @@ m.controller 'UserEditCtrl', ['$scope', '$routeParams', '$location', '$http', 'A
 
     $scope.deleteAccount = ->
         dialog = ConfirmDialog($scope, { title: "Confirm cancel account?" })
+
         doDelete = (rest) ->
             $http.delete('/users.json', {user: $scope.user.toJSON()})
-            Auth.logout()
-            $location.path '/'
-        dialog.result.then doDelete, ((error) -> $scope.error = error)
+                .error((error) -> $scope.error = error.data)
+                .success((res) ->
+                    Auth.logout()
+                    $location.path '/')
+
+        dialog.result.then doDelete
+
     null
 ]
 

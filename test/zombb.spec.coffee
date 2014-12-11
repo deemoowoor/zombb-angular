@@ -12,21 +12,20 @@ describe('zombb', ->
     describe('AuthCtrl', ->
         $scope = null
         $compile = null
-        myAuth = null
         $controller = null
         $document = null
         $timeout = null
         $httpBackend = null
+        Auth = null
 
         beforeEach(inject((_$httpBackend_, _$document_, _$timeout_,
                             $rootScope, _$controller_, _Auth_) ->
             $httpBackend = _$httpBackend_
             $scope = $rootScope
-            myAuth = _Auth_
             $controller = _$controller_
             $document = _$document_
             $timeout = _$timeout_
-
+            Auth = _Auth_
         ))
 
         beforeEach ->
@@ -77,7 +76,12 @@ describe('zombb', ->
         it('should authenticate a user', inject(($controller) ->
             ctrl = createAuthController($scope)
 
-            $httpBackend.expectPOST('/users/sign_in.json').respond({})
+            expect(Auth.isAuthenticated()).toBe(false)
+
+            $httpBackend.expectPOST('/users/sign_in.json').respond
+                name: 'test'
+                email: 'test@test.com'
+                role: 'admin'
 
             $scope.email = 'test@test.com'
             $scope.password = 'secret'
@@ -87,26 +91,18 @@ describe('zombb', ->
 
             dialog = $scope.open()
 
-            $scope.doLogin = jasmine.createSpy('doLogin')
-            $scope.error_handler = jasmine.createSpy('error_handler')
-
             dialog.close
                 email: 'test@test.com'
                 password: 'secret'
 
             $timeout.flush()
+            $scope.$apply()
             $httpBackend.flush()
 
-            $scope.$apply()
             $scope.$digest()
 
-            expect($document).toHaveModalsOpen(0)
-
-            expect($scope.doLogin).toHaveBeenCalledWith
-                email: 'test@test.com'
-                password: 'secret'
-
-            expect(myAuth.isAuthenticated()).toBe(true)
+            expect(Auth.isAuthenticated()).toBe(true)
+            expect(Auth._currentUser.role).toBe('admin')
 
         ))
     )
