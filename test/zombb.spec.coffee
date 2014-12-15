@@ -1,13 +1,7 @@
 describe('zombb', ->
     beforeEach(module('zombbApp', 'zombb.auth', 'zombb.topic',
         'ngRoute', 'ngSanitize', 'ui.bootstrap'))
-    beforeEach(module('zombb.auth', 'ngResource'))
-    beforeEach(module('zombb.topic', 'ngResource'))
-
-    AuthProvider = null
-    beforeEach module('Devise', (_AuthProvider_) ->
-        AuthProvider = _AuthProvider_
-        null)
+    beforeEach(module('zombb.auth', 'ngResource', 'Devise', 'ui.bootstrap'))
 
     describe('AuthCtrl', ->
         $scope = null
@@ -47,8 +41,7 @@ describe('zombb', ->
         createAuthController = (scope) ->
             $controller('AuthCtrl', { $scope: scope})
 
-
-        it('should be able to open a modal dialog and close it', inject(() ->
+        it('should be able to open a modal dialog and close it', ->
             ctrl = createAuthController($scope)
 
             $httpBackend.expectPOST('/users/sign_in.json').respond({})
@@ -71,9 +64,9 @@ describe('zombb', ->
 
             expect($document).toHaveModalsOpen(0)
 
-        ))
+        )
 
-        it('should authenticate a user', inject(($controller) ->
+        it('should authenticate a user', ->
             ctrl = createAuthController($scope)
 
             expect(Auth.isAuthenticated()).toBe(false)
@@ -104,6 +97,84 @@ describe('zombb', ->
             expect(Auth.isAuthenticated()).toBe(true)
             expect(Auth._currentUser.role).toBe('admin')
 
-        ))
+        )
     )
+
+    describe('Authorize', ->
+        $scope = null
+        $compile = null
+        $controller = null
+        $document = null
+        $timeout = null
+        $httpBackend = null
+        Auth = null
+        Authorize = null
+
+        beforeEach(inject((_$httpBackend_, _$document_, _$timeout_,
+                            $rootScope, _$controller_, _Auth_, _Authorize_) ->
+            $httpBackend = _$httpBackend_
+            $scope = $rootScope
+            $controller = _$controller_
+            $document = _$document_
+            $timeout = _$timeout_
+            Auth = _Auth_
+            Authorize = _Authorize_
+            null
+        ))
+
+        # cleanup
+        afterEach ->
+            $httpBackend.flush()
+            $httpBackend.verifyNoOutstandingExpectation()
+            $httpBackend.verifyNoOutstandingRequest()
+
+        beforeEach(->
+            $httpBackend.expectPOST('/users/sign_in.json').respond
+                name: 'alice'
+                email: 'alice@test.com'
+        )
+
+        it('should succeed current non-admin user ownership', ->
+            Auth._currentUser = {name: 'alice', role: 'reader'}
+            expect(Authorize.condition.owner({name: 'alice'})).toBe(true)
+            null
+        )
+
+        it('should fail if current user is not an owner', ->
+            Auth._currentUser = {name: 'alice', role: 'reader'}
+            expect(Authorize.condition.owner({name: 'bob'})).toBe(false)
+            null
+        )
+
+        it('should allow admin instead of owner', ->
+            Auth._currentUser = {name: 'alice', role: 'admin'}
+            expect(Authorize.condition.owner({name: 'bob'})).toBe(true)
+            null
+        )
+
+        it('should succeed only if authenticated', ->
+            expect(Authorize.condition.auth()).toBe(false)
+            Auth._currentUser = {name: 'alice', role: 'reader'}
+            expect(Authorize.condition.auth()).toBe(true)
+            null
+        )
+
+        it('should succeed only if editor or admin', ->
+            Auth._currentUser = {name: 'alice', role: 'reader'}
+            expect(Authorize.condition.editor()).toBe(false)
+
+            Auth._currentUser = {name: 'alice', role: 'editor'}
+            expect(Authorize.condition.editor()).toBe(true)
+
+            Auth._currentUser = {name: 'alice', role: 'admin'}
+            expect(Authorize.condition.editor()).toBe(true)
+            null
+        )
+
+
+        null
+
+    )
+
+    null
 )

@@ -21,9 +21,8 @@ m.controller 'TopicListCtrl', ['$scope', '$modal', 'Auth', 'Authorize', 'Post', 
     $scope.deleteTopic = (post) ->
         dialog = ConfirmDialog($scope, {title: 'Confirm delete topic?'})
         doDelete = (res) ->
-            # XXX: indicate an error message if it fails on server
-            post.$delete()
-            $scope.posts.splice($scope.posts.indexOf(post), 1)
+            post.$delete().then (-> $scope.posts.splice($scope.posts.indexOf(post), 1)),
+                ((error) -> $scope.error = error.data)
         dialog.result.then doDelete
 
     null
@@ -40,7 +39,6 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth',
 
     $scope.editComment = (comment) ->
         comment.editmode = true
-        # get edited element
         PostComment.get {post_id: $routeParams.topic_id, c_id: comment.id, edit: true}, (rcomment) ->
                 $scope.edit_comment = rcomment
 
@@ -59,17 +57,18 @@ m.controller 'TopicCtrl', ['$scope', '$routeParams', 'Auth',
         dialog = ConfirmDialog($scope, {title: 'Confirm delete comment?'})
 
         doDelete = (res) ->
-            # TODO: indicate an error message if it fails
             PostComment.get post_id: $scope.post.id, c_id: comment.id, (rcomment) ->
-                rcomment.$delete post_id: $scope.post.id
-            $scope.post.post_comments.splice($scope.post.post_comments.indexOf(comment), 1)
+                rcomment.$delete(post_id: $scope.post.id)
+                    .then (->
+                    comment_index = $scope.post.post_comments.indexOf(comment)
+                    $scope.post.post_comments.splice(comment_index, 1)),
+                    (error) -> $scope.error = error.data
 
         dialog.result.then doDelete
 
     $scope.new_comment = new PostComment()
 
     $scope.addComment = ->
-        # TODO: indicate an error message if it fails
         $scope.new_comment.$save post_id: $scope.post.id, (rcomment) ->
             $scope.post.post_comments.push rcomment
             $scope.new_comment = new PostComment()
@@ -84,12 +83,13 @@ m.controller 'TopicEditCtrl', ['$scope', '$routeParams', '$location', 'Post', 'A
     Post.get { post_id: $routeParams.topic_id, edit: true }, (post) ->
         $scope.post = post
 
-    # TODO: indicate an error message if it fails
     $scope.submit = ->
-        $scope.post.$update().then ->
+        $scope.post.$update()
+            .then (->
             Post.get { post_id: $scope.post.id, edit: true }, (post) ->
                 $scope.post = post
-                $location.path '/topics/' + $scope.post.id
+                $location.path '/topics/' + $scope.post.id),
+            ((error) -> $scope.error = error.data)
 
     null
 ]
@@ -101,10 +101,12 @@ m.controller 'TopicNewCtrl', ['$scope', '$routeParams', '$location', 'Post', 'Au
     $scope.post = new Post()
     $scope.submit = ->
         # TODO: indicate an error message if it fails
-        $scope.post.$save().then ->
+        $scope.post.$save()
+            .then (->
             Post.get { post_id: $scope.post.id, edit: true}, (post) ->
                 $scope.post = post
-                $location.path '/topics/' + $scope.post.id
+                $location.path '/topics/' + $scope.post.id),
+            ((error) -> $scope.error = error.field)
 
     null
 ]
